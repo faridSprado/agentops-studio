@@ -1,0 +1,58 @@
+# env
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+apps/api/.env
+apps/web/.env
+apps/web/.env.local
+
+# python
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# node
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# database
+*.db
+*.sqlite
+*.sqlite3
+agentops.db
+
+# logs
+*.log
+logs/
+
+# generated files
+storage/
+storage/exports/
+exports/
+*.zip
+*.pdf
+
+# os/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
