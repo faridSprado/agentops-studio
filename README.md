@@ -12,7 +12,7 @@ Plataforma full-stack para generar campañas multimedia a partir de briefs creat
 
 ## Demo local
 
-- **Live Demo:** `https://agentops-studio-web.vercel.app/`
+- **Live Demo:** https://agentops-studio-web.vercel.app/
 
 ## Sobre el proyecto
 
