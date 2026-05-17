@@ -12,9 +12,7 @@ Plataforma full-stack para generar campañas multimedia a partir de briefs creat
 
 ## Demo local
 
-- **Frontend:** `http://localhost:3000`
-- **Backend:** `http://localhost:8000`
-- **Health check:** `http://localhost:8000/health`
+- **Web:** `http://`
 
 ## Sobre el proyecto
 
