@@ -573,15 +573,6 @@ Cada campaña puede compartirse como PDF, Markdown, JSON o ZIP, según el tipo d
 9. Revisa la evaluación.
 10. Exporta la campaña.
 
-## Preparado para GitHub
-
-Este paquete ya está limpio para subirse como repositorio:
-
-- no incluye `.env` con credenciales reales;
-- no incluye `.venv`, `node_modules`, `.next` ni bases de datos locales;
-- incluye `.gitignore`, licencia MIT, documentación y workflow de CI;
-- incluye ejemplos de entorno seguros.
-
 ## Autor
 
 **Farid Prado**
