@@ -1,12 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
 from app.core.config import get_settings
 
 router = APIRouter(tags=["health"])
 
 
-@router.get("/health")
-def health() -> dict:
+def build_health_payload() -> dict[str, object]:
     settings = get_settings()
     return {
         "status": "ok",
@@ -18,3 +17,13 @@ def health() -> dict:
         "version": "1.2.1",
         "app": settings.app_name,
     }
+
+
+@router.get("/health")
+def health() -> dict[str, object]:
+    return build_health_payload()
+
+
+@router.head("/health", include_in_schema=False)
+def health_head() -> Response:
+    return Response(status_code=200)
