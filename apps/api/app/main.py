@@ -3,6 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import Response
 
 from app.core.config import get_settings
 from app.core.db import init_db
@@ -60,21 +61,20 @@ app.add_middleware(
 )
 
 
-
-
-@app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
-def root(request: Request) -> Response | dict:
-    if request.method == "HEAD":
-        return Response(status_code=200)
+@app.get("/", include_in_schema=False, response_model=None)
+def root() -> dict[str, object]:
     return {
         "status": "ok",
-        "app": settings.app_name,
-        "version": "1.2.1",
+        "name": "Multimedia AgentOps Studio API",
+        "message": "API running",
         "health": "/health",
-        "docs": "/docs",
-        "message": "Multimedia AgentOps Studio API está en línea.",
+        "docs": "/docs"
     }
 
+
+@app.head("/", include_in_schema=False)
+def root_head() -> Response:
+    return Response(status_code=204)
 
 @app.get("/docs-link", include_in_schema=False)
 def docs_link() -> RedirectResponse:
