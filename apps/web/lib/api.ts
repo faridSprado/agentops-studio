@@ -1,6 +1,6 @@
 import type { AgentEvent, Campaign, CampaignRequest, Health, Project } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 export class ApiError extends Error {
   constructor(
@@ -28,10 +28,11 @@ async function parseError(res: Response): Promise<string> {
 }
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  const hasBody = typeof init?.body !== 'undefined' && !(init.body instanceof FormData);
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
-      'Content-Type': 'application/json',
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
       ...(init?.headers || {})
     },
     cache: 'no-store'
@@ -45,7 +46,19 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function getHealth(): Promise<Health> {
-  return api<Health>('/health');
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(`${API_URL}/health`, {
+      method: 'GET',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    if (!res.ok) throw new ApiError(`Health check failed: HTTP ${res.status}`, res.status);
+    return res.json() as Promise<Health>;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 }
 
 export async function listProjects(): Promise<Project[]> {

@@ -29,15 +29,15 @@ export function ProductLogo({ compact = false }: { compact?: boolean }) {
 }
 
 export function ProviderBadge({ health, healthError }: { health?: Health | null; healthError?: boolean }) {
-  if (healthError) return <span className="status-pill status-danger">API sin conexión</span>;
+  if (healthError) return <span className="status-pill status-warn">API iniciando</span>;
   if (!health) return <span className="status-pill status-muted">Verificando API</span>;
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className={cx('status-pill', health.llm_enabled ? 'status-success' : 'status-warn')}>
-        IA: {health.provider || 'mock'}
+        API conectada · IA: {health.provider || 'mock'}
       </span>
       <span className={cx('status-pill', health.mock_mode ? 'status-warn' : 'status-success')}>
-        {health.mock_mode ? 'Demo activo' : 'Demo apagado'}
+        {health.mock_mode ? 'Modo demo' : 'IA real'}
       </span>
     </div>
   );

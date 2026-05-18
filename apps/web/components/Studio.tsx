@@ -67,6 +67,7 @@ export function Studio({ initialCampaignId }: StudioProps) {
     setCampaign(null);
     try {
       const project = await createProject(payload.project);
+      setHealthError(false);
       if (brandFile) {
         try {
           const { uploadBrandAsset } = await import('@/lib/api');
@@ -90,13 +91,26 @@ export function Studio({ initialCampaignId }: StudioProps) {
   }
 
   useEffect(() => {
-    getHealth().then(data => {
-      setHealth(data);
-      setHealthError(false);
-    }).catch(() => {
-      setHealth(null);
-      setHealthError(true);
-    });
+    let cancelled = false;
+    let attempts = 0;
+
+    async function checkHealth() {
+      try {
+        const data = await getHealth();
+        if (cancelled) return;
+        setHealth(data);
+        setHealthError(false);
+      } catch {
+        if (cancelled) return;
+        setHealth(null);
+        setHealthError(true);
+        attempts += 1;
+        if (attempts < 4) window.setTimeout(checkHealth, 3500 * attempts);
+      }
+    }
+
+    checkHealth();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -109,6 +123,7 @@ export function Studio({ initialCampaignId }: StudioProps) {
     const timer = window.setInterval(async () => {
       try {
         const next = await getCampaign(campaignId);
+        setHealthError(false);
         setCampaign(next);
         if (terminal.has(next.status)) {
           toast(next.status === 'completed' ? 'Campaña completada.' : next.status === 'needs_review' ? 'Lista para revisión humana.' : 'La campaña falló.', next.status === 'failed' ? 'error' : 'success');

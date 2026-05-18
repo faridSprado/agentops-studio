@@ -1,7 +1,7 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.config import get_settings
@@ -56,9 +56,29 @@ app.add_middleware(
     allow_origins=settings.cors_list,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["*"],
 )
 
+
+
+
+@app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
+def root(request: Request) -> Response | dict:
+    if request.method == "HEAD":
+        return Response(status_code=200)
+    return {
+        "status": "ok",
+        "app": settings.app_name,
+        "version": "1.2.1",
+        "health": "/health",
+        "docs": "/docs",
+        "message": "Multimedia AgentOps Studio API está en línea.",
+    }
+
+
+@app.get("/docs-link", include_in_schema=False)
+def docs_link() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
 
 @app.on_event("startup")
 def startup() -> None:
